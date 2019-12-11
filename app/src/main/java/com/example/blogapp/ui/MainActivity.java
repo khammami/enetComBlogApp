@@ -34,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int NEW_POST_ACTIVITY_REQUEST_CODE = 1;
     public static final int UPDATE_POST_ACTIVITY_REQUEST_CODE = 2;
 
-    public static final String EXTRA_DATA_UPDATE_TITLE = "extra_title_to_be_updated";
-    public static final String EXTRA_DATA_UPDATE_CONTENT = "extra_content_to_be_updated";
-    public static final String EXTRA_DATA_UPDATE_DATE = "extra_date_to_be_updated";
     public static final String EXTRA_DATA_ID = "extra_data_id";
 
     private PostViewModel mWordViewModel;
@@ -189,24 +186,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_POST_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Post post = new Post(data.getStringExtra(NewPostActivity.EXTRA_REPLY_TITLE),
-                                    data.getStringExtra(NewPostActivity.EXTRA_REPLY_CONTENT),
-                                    Converters.fromTimestamp(data.getLongExtra(NewPostActivity.EXTRA_REPLY_DATE,0)));
-            // Save the data.
-            mWordViewModel.insert(post);
+            //TODO: toast for successful inset
         } else if (requestCode == UPDATE_POST_ACTIVITY_REQUEST_CODE
                 && resultCode == RESULT_OK) {
-            String title_data = data.getStringExtra(NewPostActivity.EXTRA_REPLY_TITLE);
-            String content_data = data.getStringExtra(NewPostActivity.EXTRA_REPLY_CONTENT);
-            Date date_data = Converters.fromTimestamp(data.getLongExtra(NewPostActivity.EXTRA_REPLY_DATE,0));
-            int id = data.getIntExtra(NewPostActivity.EXTRA_REPLY_ID, -1);
-
-            if (id != -1) {
-                mWordViewModel.update(new Post(id, title_data,content_data,date_data));
-            } else {
-                Toast.makeText(this, R.string.unable_to_update,
-                        Toast.LENGTH_LONG).show();
-            }
+            //TODO: Toast for successful update
         } else {
             Toast.makeText(
                     this, R.string.empty_not_saved, Toast.LENGTH_LONG).show();
@@ -215,9 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchUpdatePostActivity(Post post) {
         Intent intent = new Intent(this, NewPostActivity.class);
-        intent.putExtra(EXTRA_DATA_UPDATE_TITLE, post.getTitle());
-        intent.putExtra(EXTRA_DATA_UPDATE_CONTENT, post.getContent());
-        intent.putExtra(EXTRA_DATA_UPDATE_DATE, Converters.dateToTimestamp(post.getPostDate()));
         intent.putExtra(EXTRA_DATA_ID, post.getId());
         startActivityForResult(intent, UPDATE_POST_ACTIVITY_REQUEST_CODE);
     }

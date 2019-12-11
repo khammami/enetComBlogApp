@@ -38,6 +38,9 @@ public class Post {
         this.mPostDate = postDate;
     }
 
+    @Ignore
+    public Post(){}
+
     public int getId() {
         return id;
     }

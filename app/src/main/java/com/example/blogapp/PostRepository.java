@@ -43,6 +43,10 @@ public class PostRepository {
         new deletePostAsyncTask(mPostDao).execute(post);
     }
 
+    public LiveData<Post> getPostById(int id) {
+        return mPostDao.getPostById(id);
+    }
+
     // Static inner classes below here to run database interactions in the background.
 
     /**

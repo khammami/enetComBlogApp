@@ -17,7 +17,7 @@ public abstract class PostRoomDataBase extends RoomDatabase {
 
     private static PostRoomDataBase INSTANCE;
 
-    public static PostRoomDataBase getDatabase(final Context context) {
+    public static PostRoomDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (PostRoomDataBase.class) {
                 if (INSTANCE == null) {

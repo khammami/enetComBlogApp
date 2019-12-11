@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.blogapp.BasicApp;
 import com.example.blogapp.PostRepository;
 import com.example.blogapp.model.Post;
 
@@ -19,7 +20,7 @@ public class PostViewModel extends AndroidViewModel {
 
     public PostViewModel(@NonNull Application application) {
         super(application);
-        mRepository = new PostRepository(application);
+        mRepository = ((BasicApp) application).getRepository();
         mAllPosts = mRepository.getAllPosts();
     }
 

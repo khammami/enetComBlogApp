@@ -13,108 +13,72 @@ import java.util.List;
 
 public class PostRepository {
 
-    private PostDao mPostDao;
+    private static PostRepository sInstance;
+    private final AppExecutors mExecutors;
+
+    private final PostRoomDataBase db;
     private LiveData<List<Post>> mAllPosts;
 
-    public PostRepository(Application application) {
-        PostRoomDataBase db = PostRoomDataBase.getDatabase(application);
-        mPostDao = db.postDao();
-        mAllPosts = mPostDao.getAllPosts();
+    public PostRepository(PostRoomDataBase database, AppExecutors executors) {
+        db = database;
+        mExecutors = executors;
+        mAllPosts = db.postDao().getAllPosts();
+    }
+
+    public static PostRepository getInstance(final PostRoomDataBase database,
+                                             final AppExecutors executors) {
+        if (sInstance == null) {
+            synchronized (PostRepository.class) {
+                if (sInstance == null) {
+                    sInstance = new PostRepository(database, executors);
+                }
+            }
+        }
+        return sInstance;
     }
 
     public LiveData<List<Post>> getAllPosts() {
         return mAllPosts;
     }
 
-    public void insert(Post post) {
-        new insertAsyncTask(mPostDao).execute(post);
+    public void insert(final Post post) {
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.postDao().insert(post);
+            }
+        });
     }
 
-    public void update(Post post)  {
-        new updatePostAsyncTask(mPostDao).execute(post);
+    public void update(final Post post) {
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.postDao().update(post);
+            }
+        });
     }
 
-    public void deleteAll()  {
-        new deleteAllPostsAsyncTask(mPostDao).execute();
+    public void deleteAll() {
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.postDao().deleteAll();
+            }
+        });
     }
 
     // Must run off main thread
-    public void deletePost(Post post) {
-        new deletePostAsyncTask(mPostDao).execute(post);
+    public void deletePost(final Post post) {
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.postDao().deletePost(post);
+            }
+        });
     }
 
     public LiveData<Post> getPostById(int id) {
-        return mPostDao.getPostById(id);
-    }
-
-    // Static inner classes below here to run database interactions in the background.
-
-    /**
-     * Inserts a post into the database.
-     */
-    private static class insertAsyncTask extends AsyncTask<Post, Void, Void> {
-
-        private PostDao mAsyncTaskDao;
-
-        insertAsyncTask(PostDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Post... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
-    }
-
-    /**
-     * Deletes all posts from the database (does not delete the table).
-     */
-    private static class deleteAllPostsAsyncTask extends AsyncTask<Void, Void, Void> {
-        private PostDao mAsyncTaskDao;
-
-        deleteAllPostsAsyncTask(PostDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mAsyncTaskDao.deleteAll();
-            return null;
-        }
-    }
-
-    /**
-     *  Deletes a single post from the database.
-     */
-    private static class deletePostAsyncTask extends AsyncTask<Post, Void, Void> {
-        private PostDao mAsyncTaskDao;
-
-        deletePostAsyncTask(PostDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Post... params) {
-            mAsyncTaskDao.deletePost(params[0]);
-            return null;
-        }
-    }
-
-    /**
-     *  Updates a post in the database.
-     */
-    private static class updatePostAsyncTask extends AsyncTask<Post, Void, Void> {
-        private PostDao mAsyncTaskDao;
-
-        updatePostAsyncTask(PostDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Post... params) {
-            mAsyncTaskDao.update(params[0]);
-            return null;
-        }
+        return db.postDao().getPostById(id);
     }
 }

@@ -24,8 +24,6 @@ public interface PostDao {
     @Delete
     void deletePost(Post post);
 
-    @Query("SELECT * from post_table LIMIT 1")
-    Post[] getAnyWord();
 
     @Query("SELECT * from post_table ORDER BY published_on DESC")
     LiveData<List<Post>> getAllPosts();

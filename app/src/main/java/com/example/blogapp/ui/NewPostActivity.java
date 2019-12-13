@@ -25,8 +25,6 @@ import static com.example.blogapp.ui.MainActivity.EXTRA_DATA_ID;
 
 public class NewPostActivity extends AppCompatActivity {
 
-    public static final String EXTRA_REPLY_ID = "REPLY_ID";
-
     private EditText mEditTitleView;
     private EditText mEditContentView;
     private TextView mDateView;

@@ -14,8 +14,6 @@ import java.util.List;
 public class NewPostViewModel extends AndroidViewModel {
     private PostRepository mRepository;
 
-    private LiveData<List<Post>> mAllPosts;
-
     public NewPostViewModel(@NonNull Application application) {
         super(application);
         mRepository = new PostRepository(application);

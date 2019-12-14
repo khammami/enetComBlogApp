@@ -17,7 +17,7 @@ import java.util.List;
 public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostViewHolder> {
 
     private final LayoutInflater mInflater;
-    private List<Post> mPosts; // Cached copy of words
+    private List<Post> mPosts; // Cached copy of posts
     private static ClickListener clickListener;
 
     public PostListAdapter(Context context) {

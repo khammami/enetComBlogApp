@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_DATA_ID = "extra_data_id";
 
-    private PostViewModel mWordViewModel;
+    private PostViewModel mPostViewModel;
     private AlertDialog.Builder mAlertBuilder;
 
     @Override
@@ -52,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up the WordViewModel.
-        mWordViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
-        // Get all the words from the database
+        // Set up the PostViewModel.
+        mPostViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
+        // Get all the posts from the database
         // and associate them to the adapter.
-        mWordViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
+        mPostViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(@Nullable final List<Post> posts) {
-                // Update the cached copy of the words in the adapter.
+                // Update the cached copy of the posts in the adapter.
                 adapter.setPosts(posts);
             }
         });
@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    // When the use swipes a word,
-                    // delete that word from the database.
+                    // When the use swipes a post,
+                    // delete that post from the database.
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                         final int position = viewHolder.getAdapterPosition();
                         final Post mPost = adapter.getPostAtPosition(position);
@@ -112,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(MainActivity.this,
-                                                getString(R.string.delete_word_preamble) + " " +
+                                                getString(R.string.delete_post_preamble) + " " +
                                                         mPost.getTitle(), Toast.LENGTH_LONG).show();
-                                        // Delete the word.
-                                        mWordViewModel.deletePost(mPost);
+                                        // Delete the post.
+                                        mPostViewModel.deletePost(mPost);
                                     }
                                 });
 
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext()
                                     , R.string.clear_data_toast_text, Toast.LENGTH_LONG).show();
                             // Delete the existing data.
-                            mWordViewModel.deleteAll();
+                            mPostViewModel.deleteAll();
                         }
                     });
 
